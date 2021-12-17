@@ -99,7 +99,7 @@ func ConfigureIface(ifName string, res *current.Result) error {
 		}
 	}
 
-	if v6gw != nil {
+	if v6gw != nil && v6gw.IsPrivate() {
 		ip.SettleAddresses(ifName, 10)
 	}
 

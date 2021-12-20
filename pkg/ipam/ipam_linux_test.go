@@ -134,7 +134,7 @@ var _ = Describe("ConfigureIface", func() {
 		err := originalNS.Do(func(ns.NetNS) error {
 			defer GinkgoRecover()
 
-			err := ConfigureIface(LINK_NAME, result)
+			err := ConfigureIface(LINK_NAME, true, result)
 			Expect(err).NotTo(HaveOccurred())
 
 			link, err := netlink.LinkByName(LINK_NAME)
@@ -191,7 +191,7 @@ var _ = Describe("ConfigureIface", func() {
 		err := originalNS.Do(func(ns.NetNS) error {
 			defer GinkgoRecover()
 
-			err := ConfigureIface(LINK_NAME, result)
+			err := ConfigureIface(LINK_NAME, true, result)
 			Expect(err).NotTo(HaveOccurred())
 
 			link, err := netlink.LinkByName(LINK_NAME)
@@ -227,7 +227,7 @@ var _ = Describe("ConfigureIface", func() {
 	It("returns an error when the interface index doesn't match the link name", func() {
 		result.IPs[0].Interface = current.Int(1)
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface(LINK_NAME, result)
+			return ConfigureIface(LINK_NAME, true, result)
 		})
 		Expect(err).To(HaveOccurred())
 	})
@@ -235,7 +235,7 @@ var _ = Describe("ConfigureIface", func() {
 	It("returns an error when the interface index is too big", func() {
 		result.IPs[0].Interface = current.Int(2)
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface(LINK_NAME, result)
+			return ConfigureIface(LINK_NAME, true, result)
 		})
 		Expect(err).To(HaveOccurred())
 	})
@@ -243,7 +243,7 @@ var _ = Describe("ConfigureIface", func() {
 	It("returns an error when the interface index is too small", func() {
 		result.IPs[0].Interface = current.Int(-1)
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface(LINK_NAME, result)
+			return ConfigureIface(LINK_NAME, true, result)
 		})
 		Expect(err).To(HaveOccurred())
 	})
@@ -251,14 +251,14 @@ var _ = Describe("ConfigureIface", func() {
 	It("returns an error when there are no interfaces to configure", func() {
 		result.Interfaces = []*current.Interface{}
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface(LINK_NAME, result)
+			return ConfigureIface(LINK_NAME, true, result)
 		})
 		Expect(err).To(HaveOccurred())
 	})
 
 	It("returns an error when configuring the wrong interface", func() {
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface("asdfasdf", result)
+			return ConfigureIface("asdfasdf", true, result)
 		})
 		Expect(err).To(HaveOccurred())
 	})
@@ -289,7 +289,7 @@ var _ = Describe("ConfigureIface", func() {
 			},
 		}
 		err := originalNS.Do(func(ns.NetNS) error {
-			return ConfigureIface(LINK_NAME, result)
+			return ConfigureIface(LINK_NAME, true, result)
 		})
 		Expect(err).NotTo(HaveOccurred())
 	})

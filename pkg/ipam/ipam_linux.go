@@ -33,7 +33,7 @@ const (
 
 // ConfigureIface takes the result of IPAM plugin and
 // applies to the ifName interface
-func ConfigureIface(ifName string, res *current.Result) error {
+func ConfigureIface(ifName string, disabledad bool, res *current.Result) error {
 	if len(res.Interfaces) == 0 {
 		return fmt.Errorf("no interfaces to configure")
 	}
@@ -99,7 +99,7 @@ func ConfigureIface(ifName string, res *current.Result) error {
 		}
 	}
 
-	if v6gw != nil && v6gw.IsPrivate() {
+	if v6gw != nil && !disabledad {
 		ip.SettleAddresses(ifName, 10)
 	}
 

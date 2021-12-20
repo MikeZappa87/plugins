@@ -54,6 +54,7 @@ type NetConf struct {
 	DPDKMode      bool
 	KernelPath    string `json:"kernelpath"` // Kernelpath of the device
 	PCIAddr       string `json:"pciBusID"`   // PCI Address of target network device
+	DisableDad    bool   `json:"disabledad,omitempty"`
 	RuntimeConfig struct {
 		DeviceID string `json:"deviceID,omitempty"`
 	} `json:"runtimeConfig,omitempty"`
@@ -162,7 +163,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 
 	if !cfg.DPDKMode {
 		err = containerNs.Do(func(_ ns.NetNS) error {
-			if err := ipam.ConfigureIface(args.IfName, newResult); err != nil {
+			if err := ipam.ConfigureIface(args.IfName, cfg.DisableDad, newResult); err != nil {
 				return err
 			}
 			return nil

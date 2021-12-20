@@ -58,6 +58,7 @@ type NetConf struct {
 	PromiscMode  bool   `json:"promiscMode"`
 	Vlan         int    `json:"vlan"`
 	MacSpoofChk  bool   `json:"macspoofchk,omitempty"`
+	DisableDad   bool   `json:"disabledad,omitempty"`
 
 	Args struct {
 		Cni BridgeArgs `json:"cni,omitempty"`
@@ -525,7 +526,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 			}
 
 			// Add the IP to the interface
-			if err := ipam.ConfigureIface(args.IfName, result); err != nil {
+			if err := ipam.ConfigureIface(args.IfName, n.DisableDad, result); err != nil {
 				return err
 			}
 			return nil

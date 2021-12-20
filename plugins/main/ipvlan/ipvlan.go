@@ -37,9 +37,10 @@ import (
 
 type NetConf struct {
 	types.NetConf
-	Master string `json:"master"`
-	Mode   string `json:"mode"`
-	MTU    int    `json:"mtu"`
+	Master     string `json:"master"`
+	Mode       string `json:"mode"`
+	MTU        int    `json:"mtu"`
+	DisableDad bool   `json:"disabledad,omitempty"`
 }
 
 func init() {
@@ -256,7 +257,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 	result.Interfaces = []*current.Interface{ipvlanInterface}
 
 	err = netns.Do(func(_ ns.NetNS) error {
-		if err := ipam.ConfigureIface(args.IfName, result); err != nil {
+		if err := ipam.ConfigureIface(args.IfName, n.DisableDad, result); err != nil {
 			return err
 		}
 

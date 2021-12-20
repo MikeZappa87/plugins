@@ -35,9 +35,10 @@ import (
 
 type NetConf struct {
 	types.NetConf
-	Master string `json:"master"`
-	VlanId int    `json:"vlanId"`
-	MTU    int    `json:"mtu,omitempty"`
+	Master     string `json:"master"`
+	VlanId     int    `json:"vlanId"`
+	MTU        int    `json:"mtu,omitempty"`
+	DisableDad bool   `json:"disabledad,omitempty"`
 }
 
 func init() {
@@ -179,7 +180,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 	result.Interfaces = []*current.Interface{vlanInterface}
 
 	err = netns.Do(func(_ ns.NetNS) error {
-		return ipam.ConfigureIface(args.IfName, result)
+		return ipam.ConfigureIface(args.IfName, n.DisableDad, result)
 	})
 	if err != nil {
 		return err

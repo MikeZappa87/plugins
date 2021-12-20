@@ -46,11 +46,12 @@ func init() {
 
 type NetConf struct {
 	types.NetConf
-	IPMasq bool `json:"ipMasq"`
-	MTU    int  `json:"mtu"`
+	IPMasq     bool `json:"ipMasq"`
+	MTU        int  `json:"mtu"`
+	DisableDad bool `json:"disabledad,omitempty"`
 }
 
-func setupContainerVeth(netns ns.NetNS, ifName string, mtu int, pr *current.Result) (*current.Interface, *current.Interface, error) {
+func setupContainerVeth(netns ns.NetNS, ifName string, mtu int, disabledad bool, pr *current.Result) (*current.Interface, *current.Interface, error) {
 	// The IPAM result will be something like IP=192.168.3.5/24, GW=192.168.3.1.
 	// What we want is really a point-to-point link but veth does not support IFF_POINTTOPOINT.
 	// Next best thing would be to let it ARP but set interface to 192.168.3.5/32 and
@@ -83,7 +84,7 @@ func setupContainerVeth(netns ns.NetNS, ifName string, mtu int, pr *current.Resu
 
 		pr.Interfaces = []*current.Interface{hostInterface, containerInterface}
 
-		if err = ipam.ConfigureIface(ifName, pr); err != nil {
+		if err = ipam.ConfigureIface(ifName, disabledad, pr); err != nil {
 			return err
 		}
 
@@ -228,7 +229,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 	}
 	defer netns.Close()
 
-	hostInterface, _, err := setupContainerVeth(netns, args.IfName, conf.MTU, result)
+	hostInterface, _, err := setupContainerVeth(netns, args.IfName, conf.MTU, conf.DisableDad, result)
 	if err != nil {
 		return err
 	}

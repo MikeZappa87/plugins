@@ -524,6 +524,12 @@ func cmdAdd(args *skel.CmdArgs) error {
 				}
 			}
 
+			_, err := sysctl.Sysctl(fmt.Sprintf("/net/ipv6/conf/%s/accept_dad", args.IfName), "0")
+
+			if err != nil {
+				return err
+			}
+
 			// Add the IP to the interface
 			if err := ipam.ConfigureIface(args.IfName, result); err != nil {
 				return err

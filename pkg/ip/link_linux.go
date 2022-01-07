@@ -146,8 +146,6 @@ func SetupVethWithName(contVethName, hostVethName string, mtu int, contVethMac s
 		return net.Interface{}, net.Interface{}, err
 	}
 
-	_, _ = sysctl.Sysctl(fmt.Sprintf("net/ipv6/conf/%s/accept_dad", contVethName), "0")
-
 	if err = netlink.LinkSetUp(contVeth); err != nil {
 		return net.Interface{}, net.Interface{}, fmt.Errorf("failed to set %q up: %v", contVethName, err)
 	}
@@ -158,8 +156,6 @@ func SetupVethWithName(contVethName, hostVethName string, mtu int, contVethMac s
 		if err != nil {
 			return fmt.Errorf("failed to lookup %q in %q: %v", hostVethName, hostNS.Path(), err)
 		}
-
-		_, _ = sysctl.Sysctl(fmt.Sprintf("net/ipv6/conf/%s/accept_dad", hostVethName), "0")
 
 		if err = netlink.LinkSetUp(hostVeth); err != nil {
 			return fmt.Errorf("failed to set %q up: %v", hostVethName, err)
